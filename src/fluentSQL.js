@@ -39,11 +39,11 @@ export default class FluentSQLBuilder {
     return this;
   }
 
-  performLimit(results) {
+  #performLimit(results) {
     return this.#limit && results.length === this.#limit;
   }
 
-  performWhere(item) {
+  #performWhere(item) {
     for (const { filter, prop } of this.#where) {
       if (!filter.test(item[prop])) return false;
     }
@@ -51,7 +51,7 @@ export default class FluentSQLBuilder {
     return true;
   }
 
-  performSelect(item) {
+  #performSelect(item) {
     const currentItem = {};
     const entries = Object.entries(item);
     for (const [key, value] of entries) {
@@ -62,7 +62,7 @@ export default class FluentSQLBuilder {
     return currentItem;
   }
 
-  performOrderBy(results) {
+  #performOrderBy(results) {
     if (!this.#orderBy) return results;
     return results.sort((prev, next) => {
       return prev[this.#orderBy].localeCompare(next[this.#orderBy]);
@@ -73,14 +73,14 @@ export default class FluentSQLBuilder {
     const results = [];
 
     for (const item of this.#database) {
-      if (!this.performWhere(item)) continue;
-      const currentItem = this.performSelect(item);
+      if (!this.#performWhere(item)) continue;
+      const currentItem = this.#performSelect(item);
       results.push(currentItem);
 
-      if (this.performLimit(results)) break;
+      if (this.#performLimit(results)) break;
     }
 
-    const finalResult = this.performOrderBy(results);
+    const finalResult = this.#performOrderBy(results);
     return finalResult;
   }
 }

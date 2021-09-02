@@ -1,2 +1,3 @@
 # fluent-sql-builder
-Created with CodeSandbox
+
+Fluent interface + Builder
